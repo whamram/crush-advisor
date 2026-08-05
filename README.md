@@ -8,12 +8,13 @@ Advisor skill for the Crush coding agent inspired by Claude's advisor tool, desi
 - Set your own model to use for the advisor in the configuration file.
 - Install script to install the skill, the hook, and the `CRUSH.md` instructions. Supports both `crush.json` and the new `crushrc`.
 
-## Installation
+## Installation and Configuration
 
 1. Clone the repository
-2. Run the install script. Choose if you use the `crush.json` format or the new `crushrc` format, and if you use a custom configuration directory. The configuration directory defaults to `~/.config/crush`, and the skills directory uses `.agents/skills/`, as that is where crush picks up global skills.
+2. Run the install script. Choose if you use the `crush.json` format or the new `crushrc` format, and if you use a custom configuration directory. The configuration directory defaults to `~/.config/crush`, and the skills directory uses `.agents/skills/`, as that is where crush picks up global skills. If you want to use a separate skill directory, just copy it over afterwards.
 **Usage:** `install.sh [--json|--crushrc] [--config=DIR]`
 3. Add your preferred model to `crush-config/config.txt`. For example, `model=hyper/qwen3.8-max`
+4. Want to exclude certain models? Add instructions in the description of the `SKILL.md`. I have: "Do not use this skill if you are one of the following models: Kimi K3, Qwen 3.8 Max, GLM 5.2"
 
 ## How it works
 
