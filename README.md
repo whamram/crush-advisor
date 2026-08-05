@@ -10,6 +10,10 @@ Advisor skill for the Crush coding agent inspired by Claude's advisor tool, desi
 
 ## Installation
 
+1. Clone the repository
+2. Run the install script. Choose if you use the `crush.json` format or the new `crushrc` format, and if you use a custom configuration directory. The configuration directory defaults to `~/.config/crush`, and the skills directory uses `.agents/skills/`, as that is where crush picks up global skills.
+**Usage:** `install.sh [--json|--crushrc] [--config=DIR]`
+
 ## How it works
 
 - A skill and instructions in CRUSH.md tell the agent when and how to use the skill.
