@@ -25,6 +25,7 @@ done
 mkdir -p "$CONFIG"
 
 # 1. Install the skill.
+mkdir -p "$HOME/.agents/skills"
 cp -r advisor "$HOME/.agents/skills/"
 
 # 2. Add the CRUSH.md advice
