@@ -1,0 +1,8 @@
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^bash",
+        "command": "~/.crush/skills/advisor/scripts/ask-advisor.sh"
+      }
+    ]
+  }

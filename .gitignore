@@ -1,0 +1,6 @@
+# Crush and claude working directories
+.crush/
+.claude/
+
+# Original advisor skill
+advisor-old/
