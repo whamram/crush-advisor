@@ -45,7 +45,7 @@ if [ "$TYPE" = json ]; then
   # hook-schema.json is a bare "hooks": {...} fragment; wrap it so jq can read it.
   HOOKS_FRAG=$(printf '{%s}' "$(tr -d '\n' < hook-schema.json)")
   MERGED=$(jq --argjson frag "$HOOKS_FRAG" \
-    'walk(if type == "object" and (.command? == "~/.crush/skills/advisor/scripts/ask-advisor.sh") then del(.command, .matcher) else . end)
+    'walk(if type == "object" and (.command? == "~/.agents/skills/advisor/scripts/ask-advisor.sh") then del(.command, .matcher) else . end)
      | .hooks.PreToolUse //= [] | .hooks.PreToolUse |= map(select(type == "object" and length > 0))
      | .hooks.PreToolUse += $frag.hooks.PreToolUse' \
     "$CRUSH_JSON")
@@ -55,7 +55,7 @@ else
   if [ ! -f "$CRUSHRC" ]; then
     printf '#!/usr/bin/env bash\n' > "$CRUSHRC"
   fi
-  if ! grep -q -- "~/.crush/skills/advisor/scripts/ask-advisor.sh" "$CRUSHRC"; then
+  if ! grep -q -- "~/.agents/skills/advisor/scripts/ask-advisor.sh" "$CRUSHRC"; then
     printf '\n# PreToolUse hook: consult the advisor before tool calls.\n' >> "$CRUSHRC"
     cat hook-schema.crushrc >> "$CRUSHRC"
   else

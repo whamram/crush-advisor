@@ -2,7 +2,7 @@
     "PreToolUse": [
       {
         "matcher": "^bash",
-        "command": "~/.crush/skills/advisor/scripts/ask-advisor.sh"
+        "command": "~/.agents/skills/advisor/scripts/ask-advisor.sh"
       }
     ]
   }
