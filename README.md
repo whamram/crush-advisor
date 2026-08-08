@@ -10,7 +10,7 @@ Advisor skill for the Crush coding agent inspired by Claude's advisor tool, desi
 
 ## Installation and Configuration
 
-1. Clone the repository
+1. Clone the repository.
 2. Run the install script. Choose if you use the `crush.json` format or the new `crushrc` format, and if you use custom directories. The configuration directory defaults to `~/.config/crush` (override with `--config-dir`), and the skills directory defaults to `~/.agents/skills`, where crush picks up global skills (override with `--skill-dir`; the hook is wired to the chosen directory).
 
 **Usage:** `install.sh [--json|--crushrc] [--config-dir=DIR] [--skill-dir=DIR]`
@@ -23,8 +23,7 @@ Advisor skill for the Crush coding agent inspired by Claude's advisor tool, desi
 - A hook runs when the agent calls the skill. The agent runs a bash `echo advisor` -> the hook intercepts and runs the scripts -> injects advice from the advisor into the session context.
 - `ask-advisor.sh` is the hook script; it checks for `echo advisor` on every bash run, pulls the chosen model from `crush-config/config.txt`, runs `session-dump.sh`, does a `crush run` with the advisor prompt and session context, then formats the output as context for crush. It uses `crush-config/` as the working directory for the advisor with the `CRUSH.md` adding custom instructions to the advisor model.
 - `session-dump.sh` pulls the session from the crush database based on the session ID and working directory inserted by the hook. 
-- `crush-config/config.txt` allows setting the model to use as the advisor
-- `crush-config/CRUSH.md` - 
+- `crush-config/config.txt` allows setting the model to use as the advisor.
 - `install.sh` as described above.
 
 ## Planned Features
