@@ -13,7 +13,10 @@ Advisor skill for the Crush coding agent inspired by Claude's advisor tool, desi
 1. Clone the repository.
 2. Run the install script. Choose if you use the `crush.json` format or the new `crushrc` format, and if you use custom directories. The configuration directory defaults to `~/.config/crush` (override with `--config-dir`), and the skills directory defaults to `~/.agents/skills`, where crush picks up global skills (override with `--skill-dir`; the hook is wired to the chosen directory).
 
-**Usage:** `install.sh [--json|--crushrc] [--config-dir=DIR] [--skill-dir=DIR]`
+**Usage:** 
+```
+install.sh [--json|--crushrc] [--config-dir=DIR] [--skill-dir=DIR]
+```
 
 3. Add your preferred model to `crush-config/config.txt`. For example, `model=hyper/qwen3.8-max`
 
