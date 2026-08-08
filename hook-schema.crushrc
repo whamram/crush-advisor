@@ -1,4 +1,4 @@
 hook add PreToolUse \
   --matcher "^bash" \
-  --command ~/.agents/skills/advisor/scripts/ask-advisor.sh \
+  --command __HOOK_CMD__ \
   --timeout 210

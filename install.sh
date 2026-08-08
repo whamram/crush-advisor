@@ -8,25 +8,35 @@ set -euo pipefail
 
 TYPE=json
 CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/crush"
+SKILL_DIR="$HOME/.agents/skills"
 
 for arg in "$@"; do
   case "$arg" in
     --json)    TYPE=json ;;
     --crushrc) TYPE=crushrc ;;
-    --config=*) CONFIG="${arg#--config=}" ;;
+    --config-dir=*) CONFIG="${arg#--config-dir=}" ;;
+    --skill-dir=*)  SKILL_DIR="${arg#--skill-dir=}" ;;
     -h|--help)
-      echo "Usage: install.sh [--json|--crushrc] [--config=DIR]"
+      echo "Usage: install.sh [--json|--crushrc] [--config-dir=DIR] [--skill-dir=DIR]"
       exit 0
       ;;
     *) echo "Unknown option: $arg" >&2; exit 1 ;;
   esac
 done
 
+# Expand a leading ~ in user-supplied paths; shell arguments are not
+# subject to tilde expansion.
+SKILL_DIR="${SKILL_DIR/#\~/$HOME}"
+CONFIG="${CONFIG/#\~/$HOME}"
+
+HOOK_CMD="$SKILL_DIR/advisor/scripts/ask-advisor.sh"
+LEGACY_CMD="~/.agents/skills/advisor/scripts/ask-advisor.sh"
+
 mkdir -p "$CONFIG"
 
 # 1. Install the skill.
-mkdir -p "$HOME/.agents/skills"
-cp -r advisor "$HOME/.agents/skills/"
+mkdir -p "$SKILL_DIR"
+cp -r advisor "$SKILL_DIR/"
 
 # 2. Add the CRUSH.md advice
 if [ -f "$CONFIG/CRUSH.md" ]; then
@@ -43,10 +53,11 @@ if [ "$TYPE" = json ]; then
     printf '{\n  "$schema": "https://charm.land/crush.json"\n}\n' > "$CRUSH_JSON"
   fi
 
-  # hook-schema.json is a bare "hooks": {...} fragment; wrap it so jq can read it.
-  HOOKS_FRAG=$(printf '{%s}' "$(tr -d '\n' < hook-schema.json)")
-  MERGED=$(jq --argjson frag "$HOOKS_FRAG" \
-    'walk(if type == "object" and (.command? == "~/.agents/skills/advisor/scripts/ask-advisor.sh") then del(.command, .matcher) else . end)
+  # hook-schema.json is a bare "hooks": {...} fragment; inject the hook
+  # command path, then wrap it so jq can read it.
+  HOOKS_FRAG=$(printf '{%s}' "$(sed "s|__HOOK_CMD__|$HOOK_CMD|g" hook-schema.json | tr -d '\n')")
+  MERGED=$(jq --argjson frag "$HOOKS_FRAG" --arg cmd "$HOOK_CMD" --arg legacy "$LEGACY_CMD" \
+    'walk(if type == "object" and (.command? == $cmd or .command? == $legacy) then del(.command, .matcher) else . end)
      | .hooks.PreToolUse //= [] | .hooks.PreToolUse |= map(select(type == "object" and length > 0))
      | .hooks.PreToolUse += $frag.hooks.PreToolUse' \
     "$CRUSH_JSON")
@@ -56,11 +67,14 @@ else
   if [ ! -f "$CRUSHRC" ]; then
     printf '#!/usr/bin/env bash\n' > "$CRUSHRC"
   fi
-  if ! grep -q -- "~/.agents/skills/advisor/scripts/ask-advisor.sh" "$CRUSHRC"; then
-    printf '\n# PreToolUse hook: consult the advisor before tool calls.\n' >> "$CRUSHRC"
-    cat hook-schema.crushrc >> "$CRUSHRC"
-  else
+  if grep -qF -- "$HOOK_CMD" "$CRUSHRC"; then
     echo "Advisor hook already present in $CRUSHRC"
+  elif grep -qF -- "$LEGACY_CMD" "$CRUSHRC"; then
+    # Migrate the pre-skill-dir hook path in place (GNU sed).
+    sed -i "s|$LEGACY_CMD|$HOOK_CMD|g" "$CRUSHRC"
+  else
+    printf '\n# PreToolUse hook: consult the advisor before tool calls.\n' >> "$CRUSHRC"
+    sed "s|__HOOK_CMD__|$HOOK_CMD|g" hook-schema.crushrc >> "$CRUSHRC"
   fi
 fi
 
