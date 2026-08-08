@@ -34,9 +34,9 @@ install.sh [--json|--crushrc] [--config-dir=DIR] [--skill-dir=DIR]
 - [ ] Create an MCP server as an alternative or replacement to the skill. 
   - Currently, every time the agent uses the bash skill, the hook fires and outputs to the TUI, adding some unnecessary clutter. I would swap the hook from firing on the bash tool to the `advisor` MCP tool, alleviating this issue. The agent would also call the native tool instead of calling the bash tool with `echo advisor` making it more native.
 
-  ## Known Limitations
+## Known Limitations
 
- Because crush lacks a dedicated plugins or extensions system, this project is quite "hacky," but it does work well. However, here are some things that I don't like that I could not find a way to work around with the limitations of Crush:
+Because crush lacks a dedicated plugins or extensions system, this project is quite "hacky," but it does work well. However, here are some things that I don't like that I could not find a way to work around with the limitations of Crush:
 
 - No way to disable the skill on the fly or depending on the model. If Crush passed the current model name into crushrc as an environmental variable that was updated on model change you could disable it depending on the model with bash, or Crush could simply have a slash command to disable a skill like oh-my-pi has.
 - The script to pull the session transcript from the database could be avoided entirely with a new hook environmental variable that offers the entire session context.
